@@ -1,0 +1,33 @@
+# render.yaml — Render.com deployment configuration
+# Connect your GitHub repo to Render and it reads this file automatically
+
+services:
+  # ── FastAPI Backend ──────────────────────────────────────────────────────────
+  - type: web
+    name: dark-pattern-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false   # You fill this in Render dashboard — never commit your key
+      - key: DATABASE_URL
+        fromDatabase:
+          name: dark-pattern-db
+          property: connectionString
+    healthCheckPath: /health
+
+  # ── Streamlit Frontend ───────────────────────────────────────────────────────
+  - type: web
+    name: dark-pattern-frontend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run frontend/app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    envVars:
+      - key: API_BASE
+        value: https://dark-pattern-backend.onrender.com/api  # Update with your backend URL
+
+# ── PostgreSQL Database ──────────────────────────────────────────────────────
+databases:
+  - name: dark-pattern-db
+    plan: free
