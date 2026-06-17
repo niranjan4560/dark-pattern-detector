@@ -3,11 +3,14 @@
 > AI-powered tool to expose manipulative UI design patterns on websites.
 > Built with **FastAPI · PostgreSQL · Google Gemini AI · Streamlit · Docker**
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-dark--pattern--detector.onrender.com-6d28d9?style=flat-square)](https://dark-pattern-detector.onrender.com)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Try_it_now-6d28d9?style=flat-square)](https://dark-pattern-detector-1-66q6.onrender.com)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue?style=flat-square)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-green?style=flat-square)](https://fastapi.tiangolo.com)
-[![Gemini AI](https://img.shields.io/badge/Gemini_AI-1.5_Flash-orange?style=flat-square)](https://aistudio.google.com)
+[![Gemini AI](https://img.shields.io/badge/Gemini_AI-2.5_Flash-orange?style=flat-square)](https://aistudio.google.com)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue?style=flat-square)](https://docker.com)
+
+**🔗 Live App:** [dark-pattern-detector-1-66q6.onrender.com](https://dark-pattern-detector-1-66q6.onrender.com)
+**🔗 API Docs:** [dark-pattern-detector-dz53.onrender.com/docs](https://dark-pattern-detector-dz53.onrender.com/docs)
 
 ---
 
@@ -15,28 +18,20 @@
 
 Dark patterns are manipulative UI tricks companies use to deceive users — pre-selected checkboxes, fake countdown timers, hidden fees, guilt-trip decline buttons. This tool **automatically detects and scores** these patterns on any website using AI.
 
-**Real impact:** Every Indian loses money to dark patterns monthly. IRCTC pre-selects travel insurance. Swiggy pre-checks donation. Amazon uses fake urgency. This tool exposes all of it.
-
----
-
-## 🖥️ Live Screenshots
-
-| Credibility Score | Pattern Detection | Analytics Dashboard |
-|---|---|---|
-| ![Score](docs/score.png) | ![Patterns](docs/patterns.png) | ![Analytics](docs/analytics.png) |
+**Real impact:** Every Indian loses money to dark patterns monthly. IRCTC pre-selects travel insurance. Swiggy pre-checks donation. Amazon uses fake urgency. This tool exposes all of it with a structured 0-100 credibility score.
 
 ---
 
 ## ✨ Features
 
 - **🔎 URL Analyzer** — Scrape and analyze any website with one click
-- **📝 Text Analyzer** — Paste page content for instant analysis
-- **🤖 Gemini AI** — Google's Gemini 1.5 Flash detects 10 dark pattern types
-- **📊 Credibility Score** — 0-100 score with Safe/Caution/Suspicious/Dangerous labels
+- **📝 Text Analyzer** — Paste page content for instant analysis (works even when sites block scrapers)
+- **🤖 Gemini AI** — Google's Gemini 2.5 Flash detects 10 dark pattern types with confidence scoring
+- **📊 Credibility Score** — 0-100 score with Safe / Caution / Suspicious / Dangerous labels
 - **📄 PDF Reports** — Downloadable professional analysis reports
-- **🗄️ Community Database** — Report and upvote dark patterns
-- **📈 Analytics Dashboard** — Trends, most common patterns, worst offenders
-- **🐳 Docker Ready** — Containerized for consistent deployment
+- **🗄️ Community Database** — Report and upvote dark patterns crowdsourced from real users
+- **📈 Analytics Dashboard** — Trends, most common patterns, worst offenders leaderboard
+- **🐳 Docker Ready** — Containerized for consistent local + cloud deployment
 
 ---
 
@@ -61,22 +56,22 @@ Dark patterns are manipulative UI tricks companies use to deceive users — pre-
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│              STREAMLIT FRONTEND  (port 8501)                │
-│  Analyze URL · Paste Content · Database · Analytics         │
-└──────────────────────┬──────────────────────────────────────┘
+│              STREAMLIT FRONTEND  (Render Web Service)        │
+│  Analyze URL · Paste Content · Database · Analytics          │
+└──────────────────────┬─────────────────────────────────────┘
                        │ REST API
-┌──────────────────────▼──────────────────────────────────────┐
-│               FASTAPI BACKEND  (port 8000)                  │
-│  /api/analyze  /api/reports  /api/patterns  /api/analytics  │
-└──────────┬───────────────────────────┬───────────────────────┘
-           │                           │
-┌──────────▼──────────┐   ┌────────────▼──────────────────────┐
-│  PostgreSQL / SQLite │   │      GOOGLE GEMINI AI             │
-│  analysis_results    │   │  gemini-1.5-flash (FREE tier)     │
-│  detected_patterns   │   │  • Dark pattern detection         │
-│  community_reports   │   │  • Credibility scoring            │
-│  pattern_stats       │   │  • Recommendations                │
-└─────────────────────┘   └───────────────────────────────────┘
+┌──────────────────────▼─────────────────────────────────────┐
+│               FASTAPI BACKEND  (Render Web Service)          │
+│  /api/analyze  /api/reports  /api/patterns  /api/analytics   │
+└──────────┬──────────────────────────┬────────────────────────┘
+           │                          │
+┌──────────▼──────────┐   ┌───────────▼───────────────────────┐
+│  PostgreSQL (Render) │   │      GOOGLE GEMINI AI              │
+│  analysis_results    │   │  gemini-2.5-flash (FREE tier)      │
+│  detected_patterns   │   │  with automatic model fallback     │
+│  community_reports   │   │  • Dark pattern detection          │
+│  pattern_stats       │   │  • Credibility scoring             │
+└──────────────────────┘   └────────────────────────────────────┘
 ```
 
 ---
@@ -86,16 +81,13 @@ Dark patterns are manipulative UI tricks companies use to deceive users — pre-
 ### Option 1 — Run Locally (5 minutes)
 
 ```bash
-# 1. Clone
-git clone https://github.com/niranjan-n-s/dark-pattern-detector.git
+git clone https://github.com/niranjan4560/dark-pattern-detector.git
 cd dark-pattern-detector
 
-# 2. Setup environment
 cp .env.example .env
 # Edit .env → add your GEMINI_API_KEY
 # Get free key at: https://aistudio.google.com/app/apikey
 
-# 3. Install & run
 pip install -r requirements.txt
 
 # Terminal 1 — Backend
@@ -126,16 +118,20 @@ docker-compose up --build
 
 ## 🌐 Deploy on Render (Free)
 
+This repo is already live on Render. To deploy your own copy:
+
 ```
 1. Fork this repo to your GitHub
-2. Go to render.com → New → Web Service
-3. Connect your GitHub repo
-4. Set environment variables:
-   GEMINI_API_KEY = your_key_here
-5. Deploy → get public URL in ~3 minutes
+2. Go to render.com → New → Web Service (backend)
+   Start Command: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+3. Go to render.com → New → Web Service (frontend)
+   Start Command: streamlit run frontend/app.py --server.port $PORT --server.address 0.0.0.0
+4. Create a free PostgreSQL database on Render, link DATABASE_URL to backend
+5. Set GEMINI_API_KEY on the backend service
+6. Set API_BASE (pointing to your backend URL + /api) on the frontend service
 ```
 
-Render auto-detects the `render.yaml` config and sets up both backend + PostgreSQL.
+Full step-by-step guide in [`DEPLOY_RENDER.md`](DEPLOY_RENDER.md).
 
 ---
 
@@ -152,9 +148,9 @@ dark-pattern-detector/
 │   │   ├── database_routes.py   # Community reports & search
 │   │   └── analytics.py         # Dashboard statistics
 │   ├── services/
-│   │   ├── ai_analyzer.py       # Gemini AI integration
-│   │   └── scraper.py           # Web scraping (httpx + BS4)
-│   └── utils/db.py              # Database setup (SQLite/PostgreSQL)
+│   │   ├── ai_analyzer.py       # Gemini AI integration with model fallback
+│   │   └── scraper.py           # Web scraping (httpx + BeautifulSoup)
+│   └── utils/db.py              # Database setup (SQLite local / PostgreSQL prod)
 ├── frontend/app.py              # Streamlit UI — 5 pages
 ├── database/seed.py             # Sample data seeder
 ├── tests/test_api.py            # Unit tests
@@ -179,7 +175,7 @@ dark-pattern-detector/
 | `GET` | `/api/patterns/leaderboard` | Worst offenders |
 | `GET` | `/api/analytics/summary` | Dashboard statistics |
 
-**Interactive API docs:** `http://localhost:8000/docs`
+**Interactive API docs:** [dark-pattern-detector-dz53.onrender.com/docs](https://dark-pattern-detector-dz53.onrender.com/docs)
 
 ---
 
@@ -208,16 +204,19 @@ docker-compose down -v             # Stop + delete database
 ## 💡 Interview Talking Points
 
 **"How does the AI detection work?"**
-> "I engineered a structured prompt for Gemini 1.5 Flash that instructs it to analyze 10 specific dark pattern categories. The scraper extracts high-signal content — buttons, forms, price elements, urgency text — before sending to Gemini. This keeps the AI focused on manipulation indicators rather than general page content."
+> "I engineered a structured prompt for Gemini 2.5 Flash that instructs it to analyze 10 specific dark pattern categories. The scraper extracts high-signal content — buttons, forms, price elements, urgency text — before sending it to Gemini. This keeps the AI focused on manipulation indicators rather than general page content. I also built a model fallback chain so if Google deprecates a model version, the app automatically tries the next one instead of breaking."
 
 **"How would this scale to 1M users?"**
-> "I'd add Redis caching for repeated URL analyses (same URL within 24h returns cached result), PostgreSQL read replicas for analytics queries, and Celery for async scraping to handle request spikes. The Gemini API has rate limits so a job queue would prevent overwhelming it."
+> "I'd add Redis caching for repeated URL analyses (same URL within 24h returns cached result), PostgreSQL read replicas for analytics queries, and Celery for async scraping to handle request spikes. The Gemini API has rate limits, so a job queue would prevent overwhelming it."
 
 **"Why PostgreSQL over MongoDB?"**
 > "The data is highly relational — analyses have patterns, patterns have community reports, all feeding analytics aggregations. SQL window functions make the leaderboard queries clean. A document store would complicate the join logic without adding value here."
 
 **"What's the credibility scoring algorithm?"**
 > "Each pattern has a severity weight — Critical=40, High=25, Medium=15, Low=5. I multiply by AI confidence score and deduct from 100. It reflects real harm potential — a high-confidence critical pattern tanks the score more than a low-confidence minor issue."
+
+**"What was the hardest bug to fix?"**
+> "Google deprecated the Gemini model I originally used mid-deployment — it returned a 404 in production despite working locally. I fixed it by adding a fallback chain that tries several model versions in order, with logging so I can see which one succeeds. That's the kind of resilience real production systems need."
 
 ---
 
@@ -226,10 +225,7 @@ docker-compose down -v             # Stop + delete database
 **Niranjan N S** — Computer Science, Amrita Vishwa Vidyapeetham
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-niranjan--n--s-blue?style=flat-square)](https://linkedin.com/in/niranjan-n-s)
-[![GitHub](https://img.shields.io/badge/GitHub-niranjan--n--s-black?style=flat-square)](https://github.com/niranjan-n-s)
+[![GitHub](https://img.shields.io/badge/GitHub-niranjan4560-black?style=flat-square)](https://github.com/niranjan4560)
 [![Email](https://img.shields.io/badge/Email-niranjanns281%40gmail.com-red?style=flat-square)](mailto:niranjanns281@gmail.com)
 
 ---
-
-*Built as part of a Data Analytics & AI portfolio targeting 10+ LPA roles in 2026 placements.*
-*Uses Google Gemini AI free tier — no paid subscription required.*
