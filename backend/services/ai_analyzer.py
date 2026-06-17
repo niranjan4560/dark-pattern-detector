@@ -47,21 +47,38 @@ DARK PATTERN TYPES TO CHECK:
 Respond ONLY in valid JSON. No markdown. No explanation outside JSON."""
 
 
+# Try model names in order — newest first, falls back if one is deprecated/unavailable
+MODEL_CANDIDATES = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-flash-latest"]
+
+
 async def analyze_with_gemini(page_content: str, url: str) -> Dict[str, Any]:
     """Analyze page content using Gemini AI"""
 
     if not GEMINI_AVAILABLE or not GEMINI_API_KEY:
         return _mock_analysis(url)
 
+    last_error = None
+    content = page_content[:8000] if len(page_content) > 8000 else page_content
+
+    for model_name in MODEL_CANDIDATES:
+        try:
+            model = genai.GenerativeModel(model_name=model_name, system_instruction=SYSTEM_PROMPT)
+            result = await _run_gemini_prompt(model, content, url)
+            if result is not None:
+                print(f"✅ Gemini analysis succeeded using model: {model_name}")
+                return result
+        except Exception as e:
+            last_error = e
+            print(f"⚠️  Model {model_name} failed: {e}")
+            continue
+
+    print(f"⚠️  All Gemini models failed. Last error: {last_error} — using mock")
+    return _mock_analysis(url)
+
+
+async def _run_gemini_prompt(model, content: str, url: str):
+    """Run the actual prompt against a given model instance. Returns None on failure to trigger fallback."""
     try:
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            system_instruction=SYSTEM_PROMPT
-        )
-
-        # Truncate to avoid token limits
-        content = page_content[:8000] if len(page_content) > 8000 else page_content
-
         prompt = f"""Analyze this website content for dark patterns.
 
 URL: {url}
@@ -119,11 +136,11 @@ Return ONLY the JSON object."""
         return result
 
     except json.JSONDecodeError as e:
-        print(f"⚠️  JSON parse error: {e} — using mock")
-        return _mock_analysis(url)
+        print(f"⚠️  JSON parse error: {e}")
+        raise
     except Exception as e:
-        print(f"⚠️  Gemini error: {e} — using mock")
-        return _mock_analysis(url)
+        print(f"⚠️  Gemini call error: {e}")
+        raise
 
 
 async def analyze_text_content(text: str, url: str) -> Dict[str, Any]:
