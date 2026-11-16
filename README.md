@@ -18,7 +18,7 @@
 
 Dark patterns are manipulative UI tricks companies use to deceive users — pre-selected checkboxes, fake countdown timers, hidden fees, guilt-trip decline buttons. This tool **automatically detects and scores** these patterns on any website using AI.
 
-**Real impact:** Every Indian loses money to dark patterns monthly. IRCTC pre-selects travel insurance. Swiggy pre-checks donation. Amazon uses fake urgency. This tool exposes all of it with a structured 0-100 credibility score.
+Typical examples are pre-selected add-ons at checkout, countdown timers that reset, and fees that appear only on the final step. The tool reports each finding with a severity and confidence, and summarises the page as a 0-100 credibility score.
 
 ---
 
@@ -179,6 +179,18 @@ dark-pattern-detector/
 
 ---
 
+## 🧮 How the Score Works
+
+Each detected pattern has a severity weight (Critical 40, High 25, Medium 15, Low 5). The weight is multiplied by the model's confidence and deducted from 100, so a high-confidence critical pattern lowers the score far more than a low-confidence minor one. Labels: 80-100 Safe, 60-79 Caution, 40-59 Suspicious, 0-39 Dangerous.
+
+The analyzer tries a list of Gemini models in order (`gemini-2.5-flash` first) and falls back to the next if one is unavailable.
+
+## ⚠️ Limitations
+
+- Detection quality depends on the LLM and on what the scraper can see; pages rendered by JavaScript or behind a login may need the paste-text mode.
+- Scores are indicative and are not a legal or regulatory finding about any site.
+- The hosted demo runs on a free tier and can take about a minute to wake.
+
 ## 🧪 Running Tests
 
 ```bash
@@ -201,31 +213,12 @@ docker-compose down -v             # Stop + delete database
 
 ---
 
-## 💡 Interview Talking Points
-
-**"How does the AI detection work?"**
-> "I engineered a structured prompt for Gemini 2.5 Flash that instructs it to analyze 10 specific dark pattern categories. The scraper extracts high-signal content — buttons, forms, price elements, urgency text — before sending it to Gemini. This keeps the AI focused on manipulation indicators rather than general page content. I also built a model fallback chain so if Google deprecates a model version, the app automatically tries the next one instead of breaking."
-
-**"How would this scale to 1M users?"**
-> "I'd add Redis caching for repeated URL analyses (same URL within 24h returns cached result), PostgreSQL read replicas for analytics queries, and Celery for async scraping to handle request spikes. The Gemini API has rate limits, so a job queue would prevent overwhelming it."
-
-**"Why PostgreSQL over MongoDB?"**
-> "The data is highly relational — analyses have patterns, patterns have community reports, all feeding analytics aggregations. SQL window functions make the leaderboard queries clean. A document store would complicate the join logic without adding value here."
-
-**"What's the credibility scoring algorithm?"**
-> "Each pattern has a severity weight — Critical=40, High=25, Medium=15, Low=5. I multiply by AI confidence score and deduct from 100. It reflects real harm potential — a high-confidence critical pattern tanks the score more than a low-confidence minor issue."
-
-**"What was the hardest bug to fix?"**
-> "Google deprecated the Gemini model I originally used mid-deployment — it returned a 404 in production despite working locally. I fixed it by adding a fallback chain that tries several model versions in order, with logging so I can see which one succeeds. That's the kind of resilience real production systems need."
-
----
-
 ## 👤 Author
 
 **Niranjan N S** — Computer Science, Amrita Vishwa Vidyapeetham
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-niranjan--n--s-blue?style=flat-square)](https://linkedin.com/in/niranjan-n-s)
 [![GitHub](https://img.shields.io/badge/GitHub-niranjan4560-black?style=flat-square)](https://github.com/niranjan4560)
-[![Email](https://img.shields.io/badge/Email-niranjanns281%40gmail.com-red?style=flat-square)](mailto:niranjanns281@gmail.com)
+[![Email](https://img.shields.io/badge/Email-njn1171%40gmail.com-red?style=flat-square)](mailto:njn1171@gmail.com)
 
 ---
